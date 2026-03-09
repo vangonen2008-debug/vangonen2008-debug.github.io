@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetic Buttons</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .magnetic-button {
+            position: relative;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            margin: 20px;
+        }
+        .magnetic-button:hover {
+            background: linear-gradient(45deg, #feca57, #ff6b6b);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+        .magnetic-button:active {
+            transform: translateY(0px);
+        }
+    </style>
+</head>
+<body>
+    <button class="magnetic-button">Button 1</button>
+    <button class="magnetic-button">Button 2</button>
+    <button class="magnetic-button">Button 3</button>
+    <script src="magnetic-buttons.js"></script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link href="https://fonts.googleapis.com/css?family=Nunito:400,700|Pacifico&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Man Game</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 60%, #a7c7e7 100%);
+            color: #444;
+            font-family: 'Nunito', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3em;
+            color: #6fa3ef;
+            margin-bottom: 0.2em;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px #a7c7e7;
+        }
+        #statusPanel {
+            font-family: 'Nunito', Arial, sans-serif;
+            font-weight: 700;
+            color: #444;
+        }
+        #gameArea {
+            position: relative;
+            width: 900px;
+            height: 600px;
+            background: linear-gradient(135deg, #f8fafc 60%, #a7c7e7 100%);
+            border: 4px solid #fff;
+            margin-top: 40px;
+            border-radius: 30px;
+            box-shadow: 0 8px 32px rgba(80,120,180,0.18);
+            overflow: hidden;
+        }
+        .wall {
+            position: absolute;
+            background: linear-gradient(135deg, #a7c7e7 60%, #6fa3ef 100%);
+            z-index: 2;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(80,120,180,0.12);
+        }
+        .pellet {
+            position: absolute;
+            background: #ffe4e1;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            z-index: 1;
+            box-shadow: 0 1px 4px #fff6f6;
+        }
+        .character {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .pacman {
+            background: #fffbe0;
+            border: 3px solid #ffe066;
+            box-shadow: 0 2px 8px #ffe066;
+        }
+        .ghost {
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px rgba(255,255,255,0.18);
+            transition: box-shadow 0.2s;
+        }
+        .ghost.red { background: #f00; }
+        .ghost.pink { background: #ffb6c1; }
+        .ghost.cyan { background: #a7f3ff; }
+        .ghost.orange { background: #ffd580; }
+        .ghost:hover {
+            box-shadow: 0 4px 16px #ffb6c1;
+        }
+        .hunter {
+            background: #b6b6e7;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px #b6b6e7;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pac-Man Game</h1>
+    <div id="statusPanel" style="margin-top:10px;margin-bottom:10px;font-size:1.3em;display:flex;gap:40px;justify-content:center;align-items:center;">
+        <span id="livesPanel">Lives:
+            <span id="livesHearts"></span>
+        </span>
+        <span id="timerPanel">Time:
+            <span style="font-size:1.2em">😊</span>
+            <span id="timerCount">0</span> s
+        </span>
+    </div>
+    <div id="gameArea">
+        <img src="pacman.svg" class="character" id="pacman" alt="Pac-Man" style="z-index:4;" />
+        <div class="ghost red" id="ghost1"></div>
+        <div class="ghost pink" id="ghost2"></div>
+        <div class="ghost cyan" id="ghost3"></div>
+        <div class="ghost orange" id="ghost4"></div>
+        <img src="hunter-3.svg" class="character" id="hunter" alt="Hunter" style="z-index:4;" />
+        <img src="hunter.svg" class="character" id="hunter2" alt="Hunter2" style="z-index:4;" />
+        <img src="hunter1.svg" class="character" id="hunter3" alt="Hunter3" style="z-index:4;" />
+        <img src="hunter2.svg" class="character" id="hunter4" alt="Hunter4" style="z-index:4;" />
+        <img src="hunter3.svg" class="character" id="hunter5" alt="Hunter5" style="z-index:4;" />
+
+        <div id="pellets"></div>
+        <div id="walls"></div>
+    </div>
+    <script>
+            let lives = 5;
+            let invincible = false;
+            let timer = 0;
+            let timerInterval = null;
+        // ...existing code...
+        // Maze grid: 30x20
+        const gridCols = 30;
+        const gridRows = 20;
+        const cellSize = 30;
+        // 0 - empty, 1 - wall, 2 - pellet
+        const maze = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,1],
+            [1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,1],
+            [1,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
+            [1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1],
+            [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,1],
+            [1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1],
+            [1,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
+            [1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,1],
+            [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,1],
+            [1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1],
+            [1,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
+            [1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,1],
+            [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        // Positions in grid
+        const positions = {
+            pacman: { x: 1, y: 1 },
+            ghost1: { x: 18, y: 1 },
+            ghost2: { x: 1, y: 11 },
+            ghost3: { x: 10, y: 6 },
+            ghost4: { x: 10, y: 1 },
+            hunter: { x: 28, y: 18 },
+            hunter2: { x: 1, y: 18 },
+            hunter3: { x: 28, y: 1 },
+            hunter4: { x: 15, y: 10 },
+            hunter5: { x: 5, y: 5 },
+            hunter6: { x: 15, y: 18 }
+        };
+
+        // Draw walls
+        function drawMaze() {
+            const wallsDiv = document.getElementById('walls');
+            wallsDiv.innerHTML = '';
+            for (let r = 0; r < gridRows; r++) {
+                for (let c = 0; c < gridCols; c++) {
+                    if (maze[r][c] === 1) {
+                        const wall = document.createElement('div');
+                        wall.className = 'wall';
+                        wall.style.left = (c * cellSize) + 'px';
+                        wall.style.top = (r * cellSize) + 'px';
+                        wall.style.width = cellSize + 'px';
+                        wall.style.height = cellSize + 'px';
+                        wallsDiv.appendChild(wall);
+                    }
+                }
+            }
+        }
+        drawMaze();
+
+        // Draw pellets
+        function drawPellets() {
+            const pelletsDiv = document.getElementById('pellets');
+            pelletsDiv.innerHTML = '';
+            for (let r = 0; r < gridRows; r++) {
+                for (let c = 0; c < gridCols; c++) {
+                    if (maze[r][c] === 2) {
+                        const pellet = document.createElement('div');
+                        pellet.className = 'pellet';
+                        pellet.style.left = (c * cellSize + cellSize/2 - 6) + 'px';
+                        pellet.style.top = (r * cellSize + cellSize/2 - 6) + 'px';
+                        pellet.setAttribute('data-rc', r + '-' + c);
+                        pelletsDiv.appendChild(pellet);
+                    }
+                }
+            }
+        }
+        drawPellets();
+
+        // Update character positions
+        function updatePositions() {
+            const ids = ['pacman','hunter','hunter2','hunter3','hunter4','hunter5','hunter6','ghost1','ghost2','ghost3','ghost4'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.left = (positions[id].x * cellSize) + 'px';
+                    el.style.top = (positions[id].y * cellSize) + 'px';
+                }
+            });
+        }
+        updatePositions();
+
+        // Game state
+        let gameOver = false;
+        let score = 0;
+        let pelletTotal = 0;
+        for (let r = 0; r < gridRows; r++)
+            for (let c = 0; c < gridCols; c++)
+                if (maze[r][c] === 2) pelletTotal++;
+
+        function showMessage(msg) {
+            const msgDiv = document.createElement('div');
+            msgDiv.style.position = 'absolute';
+            msgDiv.style.top = '50%';
+            msgDiv.style.left = '50%';
+            msgDiv.style.transform = 'translate(-50%, -50%)';
+            msgDiv.style.background = '#222';
+            msgDiv.style.color = '#fff';
+            msgDiv.style.fontSize = '2em';
+            msgDiv.style.padding = '20px 40px';
+            msgDiv.style.borderRadius = '10px';
+            msgDiv.style.zIndex = 10;
+            msgDiv.innerText = msg;
+            document.getElementById('gameArea').appendChild(msgDiv);
+        }
+
+        function updateStatusPanel() {
+            // Update hearts
+            let hearts = '';
+            for (let i = 0; i < lives; i++) hearts += '❤️';
+            document.getElementById('livesHearts').innerHTML = hearts;
+            document.getElementById('timerCount').innerText = timer;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timer++;
+                updateStatusPanel();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+        }
+
+        updateStatusPanel();
+        startTimer();
+        
+
+        // Pac-Man movement
+        document.addEventListener('keydown', function(e) {
+            if (gameOver) return;
+            let dx = 0, dy = 0;
+            switch (e.key) {
+                case 'ArrowUp': dy = -1; break;
+                case 'ArrowDown': dy = 1; break;
+                case 'ArrowLeft': dx = -1; break;
+                case 'ArrowRight': dx = 1; break;
+                default: return;
+            }
+            const nx = positions.pacman.x + dx;
+            const ny = positions.pacman.y + dy;
+            if (maze[ny][nx] !== 1) {
+                positions.pacman.x = nx;
+                positions.pacman.y = ny;
+                updatePositions();
+                checkPellet();
+                checkLose();
+                checkWin();
+            }
+        });
+
+        // Hunter movement: pursue Pac-Man
+        function moveHunter() {
+            if (gameOver) return;
+            let dx = positions.pacman.x - positions.hunter.x;
+            let dy = positions.pacman.y - positions.hunter.y;
+            let mx = 0, my = 0;
+            if (Math.abs(dx) > Math.abs(dy)) {
+                mx = dx > 0 ? 1 : -1;
+            } else if (dy !== 0) {
+                my = dy > 0 ? 1 : -1;
+            }
+            // Try move in chosen direction, else try other axis
+            let nx = positions.hunter.x + mx;
+            let ny = positions.hunter.y + my;
+            if (maze[ny][nx] !== 1) {
+                positions.hunter.x = nx;
+                positions.hunter.y = ny;
+            } else if (mx !== 0 && maze[positions.hunter.y + (dy > 0 ? 1 : -1)][positions.hunter.x] !== 1) {
+                positions.hunter.y += (dy > 0 ? 1 : -1);
+            } else if (my !== 0 && maze[positions.hunter.y][positions.hunter.x + (dx > 0 ? 1 : -1)] !== 1) {
+                positions.hunter.x += (dx > 0 ? 1 : -1);
+            }
+            updatePositions();
+            checkLose();
+        }
+
+        function checkPellet() {
+            const r = positions.pacman.y;
+            const c = positions.pacman.x;
+            if (maze[r][c] === 2) {
+                maze[r][c] = 0;
+                score++;
+                drawPellets();
+            }
+        }
+
+        function checkLose() {
+            // Pac-Man vs hunter
+            for (let id of ['hunter','hunter2','hunter3','hunter4','hunter5','hunter6']) {
+                if (positions.pacman.x === positions[id].x && positions.pacman.y === positions[id].y) {
+                    loseLife();
+                }
+            }
+            // Pac-Man vs ghosts
+            for (let id of ['ghost1','ghost2','ghost3','ghost4']) {
+                if (positions.pacman.x === positions[id].x && positions.pacman.y === positions[id].y) {
+                    loseLife();
+                }
+            }
+
+        }
+
+        function loseLife() {
+            if (invincible || gameOver) return;
+            lives--;
+            updateStatusPanel();
+            invincible = true;
+            setTimeout(() => { invincible = false; }, 2000);
+            if (lives <= 0) {
+                gameOver = true;
+                stopTimer();
+                showMessage('Game Over!');
+            }
+        }
+
+        function checkWin() {
+            if (score === pelletTotal) {
+                gameOver = true;
+                stopTimer();
+                showMessage('You Win!');
+            }
+        }
+
+        setInterval(() => {
+            moveHunter();
+            moveHunterGeneric('hunter2');
+            moveHunterGeneric('hunter3');
+            moveHunterGeneric('hunter4');
+            moveHunterGeneric('hunter5');
+            moveHunterGeneric('hunter6');
+            moveGhost('ghost1', positions.pacman.x, positions.pacman.y); // Red ghost: агрессивный
+            moveGhost('ghost2', positions.pacman.x, positions.pacman.y); // Pink ghost: преследует
+            moveGhost('ghost3', positions.pacman.x, positions.pacman.y); // Cyan ghost: случайно
+            moveGhost('ghost4', positions.pacman.x, positions.pacman.y); // Orange ghost: случайно
+        }, 300);
+
+        function moveHunterGeneric(hunterId) {
+            if (gameOver) return;
+            let dx = positions.pacman.x - positions[hunterId].x;
+            let dy = positions.pacman.y - positions[hunterId].y;
+            let mx = 0, my = 0;
+            if (Math.abs(dx) > Math.abs(dy)) {
+                mx = dx > 0 ? 1 : -1;
+            } else if (dy !== 0) {
+                my = dy > 0 ? 1 : -1;
+            }
+            let nx = positions[hunterId].x + mx;
+            let ny = positions[hunterId].y + my;
+            if (maze[ny][nx] !== 1) {
+                positions[hunterId].x = nx;
+                positions[hunterId].y = ny;
+            } else if (mx !== 0 && maze[positions[hunterId].y + (dy > 0 ? 1 : -1)][positions[hunterId].x] !== 1) {
+                positions[hunterId].y += (dy > 0 ? 1 : -1);
+            } else if (my !== 0 && maze[positions[hunterId].y][positions[hunterId].x + (dx > 0 ? 1 : -1)] !== 1) {
+                positions[hunterId].x += (dx > 0 ? 1 : -1);
+            }
+            updatePositions();
+            checkLose();
+        }
+
+        // Логика движения призраков
+        function moveGhost(id, targetX, targetY) {
+            if (gameOver) return;
+            let ghost = positions[id];
+            let dx = targetX - ghost.x;
+            let dy = targetY - ghost.y;
+            let mx = 0, my = 0;
+            // Red и Pink преследуют Pac-Man
+            if (id === 'ghost1' || id === 'ghost2') {
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    mx = dx > 0 ? 1 : -1;
+                } else if (dy !== 0) {
+                    my = dy > 0 ? 1 : -1;
+                }
+            } else {
+                // Cyan и Orange двигаются случайно
+                let dirs = [ [1,0], [-1,0], [0,1], [0,-1] ];
+                let valid = dirs.filter(([dx,dy]) => {
+                    let nx = ghost.x + dx;
+                    let ny = ghost.y + dy;
+                    return maze[ny] && maze[ny][nx] !== 1;
+                });
+                if (valid.length > 0) {
+                    let [rdx, rdy] = valid[Math.floor(Math.random()*valid.length)];
+                    mx = rdx;
+                    my = rdy;
+                }
+            }
+            let nx = ghost.x + mx;
+            let ny = ghost.y + my;
+            if (maze[ny] && maze[ny][nx] !== 1) {
+                ghost.x = nx;
+                ghost.y = ny;
+            }
+            updatePositions();
+            checkLose();
+        }
+        // ...existing code...
+    </script>
+</body>
+</html>

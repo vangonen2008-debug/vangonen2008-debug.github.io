@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loogiline Viga Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f0f2f5;font-family:system-ui, sans-serif;}
+        .card{background:#fff;padding:2rem 2.5rem;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);max-width:600px;width:90vw;}
+        h1{margin-top:0;text-align:center;font-size:1.8rem;}
+        .question{text-align:left;font-size:1.2rem;margin:1.5rem 0;}
+        .choices{list-style:none;padding:0;}
+        .choices li{margin:.6rem 0;}
+        .choices button{width:100%;padding:.8rem 1rem;border:1px solid #ccc;border-radius:8px;background:#fafafa;cursor:pointer;text-align:left;transition:background .2s;}
+        .choices button:hover{background:#e0e0e0;}
+        .choices button.correct{background:#c8e6c9;border-color:#2e7d32;color:#2e7d32;}
+        .choices button.wrong{background:#ffcdd2;border-color:#c62828;color:#c62828;}
+        .explanation{margin-top:1rem;font-size:1rem;display:none;}
+        .controls{margin-top:1.5rem;text-align:center;}
+        .btn{padding:.7rem 1.2rem;border:none;border-radius:8px;background:#1976d2;color:#fff;font-weight:600;cursor:pointer;transition:background .2s;}
+        .btn:hover{background:#1565c0;}
+        .score{font-size:1.2rem;text-align:center;margin-top:1rem;}
+    </style>
+</head>
+<body>
+    <div class="card" id="quizCard">
+        <h1>Loogiline Viga</h1>
+        <div class="question" id="question">Loading...</div>
+        <ul class="choices" id="choices"></ul>
+        <div class="explanation" id="explanation"></div>
+        <div class="controls">
+            <button id="nextBtn" class="btn" style="display:none;">Next</button>
+        </div>
+        <div class="score" id="score" style="display:none;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "If we don't act now, everything will be ruined!",
+                choices: [
+                    "Slippery slope",
+                    "Straw man",
+                    "Ad hominem",
+                    "Appeal to authority"
+                ],
+                answer: 0,
+                explanation: "Claiming that a chain of events will inevitably lead to disaster without evidence is the slippery slope fallacy."
+            },
+            {
+                text: "You can't trust John's opinion on climate change; he's not even a scientist.",
+                choices: [
+                    "Red herring",
+                    "Ad hominem",
+                    "False dichotomy",
+                    "Post hoc"
+                ],
+                answer: 1,
+                explanation: "Attacking the person rather than addressing the argument is ad hominem."
+            },
+            {
+                text: "Either we ban all cars or we let pollution destroy the planet.",
+                choices: [
+                    "Bandwagon",
+                    "False dichotomy",
+                    "Hasty generalization",
+                    "Begging the question"
+                ],
+                answer: 1,
+                explanation: "Presenting only two extreme options when others exist is a false dichotomy."
+            }
+        ];
+
+        let current = 0;
+        let score = 0;
+
+        const questionEl = document.getElementById('question');
+        const choicesEl = document.getElementById('choices');
+        const explanationEl = document.getElementById('explanation');
+        const nextBtn = document.getElementById('nextBtn');
+        const scoreEl = document.getElementById('score');
+
+        function showQuestion() {
+            const q = questions[current];
+            questionEl.textContent = q.text;
+            choicesEl.innerHTML = '';
+            explanationEl.style.display = 'none';
+            nextBtn.style.display = 'none';
+            q.choices.forEach((c,i)=>{
+                const li = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.textContent = c;
+                btn.addEventListener('click', () => selectAnswer(i));
+                li.appendChild(btn);
+                choicesEl.appendChild(li);
+            });
+        }
+
+        function selectAnswer(index) {
+            const q = questions[current];
+            const buttons = choicesEl.querySelectorAll('button');
+            buttons.forEach((btn,i)=>{
+                btn.disabled = true;
+                if(i === q.answer) btn.classList.add('correct');
+                if(i === index && i !== q.answer) btn.classList.add('wrong');
+            });
+            if(index === q.answer) score++;
+            explanationEl.textContent = q.explanation;
+            explanationEl.style.display = 'block';
+            nextBtn.style.display = 'inline-block';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            current++;
+            if(current < questions.length) {
+                showQuestion();
+            } else {
+                showScore();
+            }
+        });
+
+        function showScore() {
+            quizCard.innerHTML = `<h1>Resultaat</h1><p class="score">You scored ${score} out of ${questions.length}.</p>`;
+        }
+
+        showQuestion();
+    </script>
+</body>
+</html>

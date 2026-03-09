@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-Index Shuffle</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .layer {
+            width: 150px;
+            height: 150px;
+            position: absolute;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .layer:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+        }
+        .layer1 { background: linear-gradient(45deg, #ff9a9e, #fecfef); top: 100px; left: 200px; z-index: 1; }
+        .layer2 { background: linear-gradient(45deg, #a8edea, #fed6e3); top: 150px; left: 250px; z-index: 2; }
+        .layer3 { background: linear-gradient(45deg, #ffecd2, #fcb69f); top: 200px; left: 300px; z-index: 3; }
+        .layer4 { background: linear-gradient(45deg, #d299c2, #fef9d7); top: 250px; left: 350px; z-index: 4; }
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        p {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <h1>Z-Index Shuffle</h1>
+    <p>Click on any colored layer to bring it to the front!</p>
+    <div class="layer layer1">Layer 1</div>
+    <div class="layer layer2">Layer 2</div>
+    <div class="layer layer3">Layer 3</div>
+    <div class="layer layer4">Layer 4</div>
+    <script src="z-index-shuffle.js"></script>
+</body>
+</html>

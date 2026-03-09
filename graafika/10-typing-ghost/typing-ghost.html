@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Ghost</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .input-container {
+            margin-bottom: 40px;
+        }
+        input {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .ghost-text {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 50px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .letter {
+            display: inline-block;
+            animation: appearFromBottom 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes appearFromBottom {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        p {
+            font-size: 18px;
+            text-align: center;
+            max-width: 500px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Typing Ghost</h1>
+    <p>Type in the input below and watch the text appear with a ghostly delay and animation!</p>
+    <div class="input-container">
+        <input type="text" id="text-input" placeholder="Start typing...">
+    </div>
+    <div class="ghost-text" id="ghost-text"></div>
+    <script src="typing-ghost.js"></script>
+</body>
+</html>

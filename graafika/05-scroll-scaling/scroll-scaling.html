@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll-Driven Scaling</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .scroll-element {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            margin: 50px auto;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.1s ease;
+        }
+        .scroll-element:hover {
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+        }
+        .spacer {
+            height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scroll to Scale</h1>
+    <div class="scroll-element" id="elem1">Element 1</div>
+    <div class="spacer"></div>
+    <div class="scroll-element" id="elem2">Element 2</div>
+    <div class="spacer"></div>
+    <div class="scroll-element" id="elem3">Element 3</div>
+    <div class="spacer"></div>
+    <div class="scroll-element" id="elem4">Element 4</div>
+    <div class="spacer"></div>
+    <div class="scroll-element" id="elem5">Element 5</div>
+    <script src="scroll-scaling.js"></script>
+</body>
+</html>

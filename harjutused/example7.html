@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Strength Checker</title>
+    <style>
+        body {
+            margin:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            height:100vh;
+            background:#121212;
+            color:#eee;
+            font-family:system-ui, sans-serif;
+        }
+        .container {
+            background:#1f1f1f;
+            padding:2rem;
+            border-radius:12px;
+            box-shadow:0 4px 20px rgba(0,0,0,.6);
+            width:90vw;
+            max-width:400px;
+            text-align:center;
+        }
+        h1{margin-top:0;font-size:1.8rem;}
+        input[type=password] {
+            width:100%;padding:.8rem;border:none;border-radius:6px;
+            font-size:1rem;box-sizing:border-box;
+            background:#2a2a2a;color:#fff;
+            margin:1rem 0;
+        }
+        .strength-bar {
+            height:12px;
+            border-radius:6px;
+            background:#333;
+            overflow:hidden;
+        }
+        .strength-fill {
+            height:100%;width:0;
+            background:red;
+            transition:width .3s, background .3s;
+        }
+        .criteria {
+            text-align:left;
+            font-size:.9rem;
+            margin-top:1rem;
+        }
+        .criteria li {margin:.3rem 0;}
+        .criteria li.valid {color:#4caf50;}
+        .criteria li.invalid {color:#b71c1c;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Strength</h1>
+        <input type="password" id="pwd" placeholder="Enter password" />
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <ul class="criteria">
+            <li id="lengthCrit" class="invalid">At least 8 characters</li>
+            <li id="caseCrit" class="invalid">Both uppercase &amp; lowercase</li>
+            <li id="numCrit" class="invalid">Contains a number</li>
+            <li id="symCrit" class="invalid">Contains a symbol</li>
+        </ul>
+    </div>
+
+    <script>
+        const pwdInput = document.getElementById('pwd');
+        const fill = document.getElementById('strengthFill');
+        const lengthCrit = document.getElementById('lengthCrit');
+        const caseCrit = document.getElementById('caseCrit');
+        const numCrit = document.getElementById('numCrit');
+        const symCrit = document.getElementById('symCrit');
+
+        pwdInput.addEventListener('input', updateStrength);
+
+        function updateStrength() {
+            const val = pwdInput.value;
+            let score = 0;
+
+            const lenOk = val.length >= 8;
+            const caseOk = /[a-z]/.test(val) && /[A-Z]/.test(val);
+            const numOk = /[0-9]/.test(val);
+            const symOk = /[^A-Za-z0-9]/.test(val);
+
+            lengthCrit.className = lenOk ? 'valid' : 'invalid';
+            caseCrit.className = caseOk ? 'valid' : 'invalid';
+            numCrit.className = numOk ? 'valid' : 'invalid';
+            symCrit.className = symOk ? 'valid' : 'invalid';
+
+            if(lenOk) score++;
+            if(caseOk) score++;
+            if(numOk) score++;
+            if(symOk) score++;
+
+            const percent = (score / 4) * 100;
+            fill.style.width = percent + '%';
+            if(percent < 25) fill.style.background = '#b71c1c';
+            else if(percent < 50) fill.style.background = '#f57f17';
+            else if(percent < 75) fill.style.background = '#ffa000';
+            else fill.style.background = '#4caf50';
+        }
+    </script>
+</body>
+</html>

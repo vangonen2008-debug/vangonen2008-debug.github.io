@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Programming Excuse Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+    /* additional styles for the excuse generator */
+    body {
+        background: url('https://source.unsplash.com/1600x900/?technology,code') center/cover no-repeat fixed #121212;
+        color: #ff73d0;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .excuse-app {
+        text-align: center;
+        max-width: 600px;
+        padding: 2rem;
+        background: #8a4a63;
+        border: 2px solid #f86eb3;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(170, 255, 130, 0.7);
+    }
+    .excuse-text {
+        font-size: 1.5rem;
+        line-height: 1.4;
+        min-height: 4rem;
+        margin: 1.5rem 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        opacity: 0;
+    }
+    .btn {
+        cursor: pointer;
+        padding: 0.8rem 1.4rem;
+        margin: 0.3rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #121212;
+        background: linear-gradient(135deg,#fff067,#ff2b83);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(255, 232, 138, 0.6);
+    }
+    </style>
+</head>
+<body>
+    <div class="excuse-app">
+        <h1>Programmer Excuse Generator / Programmeerija vabanduse generaator / Генератор оправданий программиста</h1>
+        <div id="excuse" class="excuse-text"></div>
+        <button id="generate" class="btn">Generate again / Alusta uuesti / Сгенерировать снова</button>
+        <button id="copy" class="btn">Copy to clipboard / Kopeeri lõikelauale / Копировать в буфер</button>
+    </div>
+
+    <script>
+        const subjects = [
+            'My professor',
+            'A quantum bug',
+            'The vending machine',
+            'My goldfish',
+            'Gravity',
+            'The campus Wi‑Fi',
+            'The group chat',
+            'A mysterious gremlin',
+            'My sleep schedule',
+            'The lecture notes'
+        ];
+        const verbs = [
+            'ate',
+            'magically erased',
+            'hid',
+            'mistook for homework',
+            'shrank',
+            'teleported',
+            'drank',
+            'turned into an emoji',
+            'caught fire on',
+            'sent to Mars'
+        ];
+        const objects = [
+            'my assignment',
+            'the midterm answers',
+            'the syllabus',
+            'the final exam',
+            'my group project',
+            'the lecture video',
+            'my sleep',
+            'the printer',
+            'my GPA',
+            'the campus map'
+        ];
+
+        function pickRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function animateText(element, text) {
+            element.textContent = '';
+            element.style.opacity = 1;
+            let i = 0;
+            const interval = setInterval(() => {
+                element.textContent += text.charAt(i);
+                i++;
+                if (i >= text.length) clearInterval(interval);
+            }, 30);
+        }
+
+        function generateExcuse() {
+            const excuse = `${pickRandom(subjects)} ${pickRandom(verbs)} ${pickRandom(objects)}.`;
+            const el = document.getElementById('excuse');
+            animateText(el, excuse);
+        }
+
+        document.getElementById('generate').addEventListener('click', generateExcuse);
+        document.getElementById('copy').addEventListener('click', () => {
+            const text = document.getElementById('excuse').textContent;
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Excuse copied! / Vabanduse kopeeritud! / Извинение скопировано!');
+            }).catch(() => {
+                alert('Copy failed. / Kopeerimine ebaõnnestus. / Сбой копирования.');
+            });
+        });
+
+        // generate first excuse on load
+        generateExcuse();
+    </script>
+</body>
+</html>

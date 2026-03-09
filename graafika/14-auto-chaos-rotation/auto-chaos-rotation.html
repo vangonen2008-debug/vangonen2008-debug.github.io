@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Chaos Rotation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .rotating {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            border-radius: 20px;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease;
+        }
+        .rotating:hover {
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        p {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <h1>Auto-Chaos Rotation</h1>
+    <p>Watch the elements rotate at different speeds, creating a lively floating interface!</p>
+    <div class="rotating">Element 1</div>
+    <div class="rotating">Element 2</div>
+    <div class="rotating">Element 3</div>
+    <div class="rotating">Element 4</div>
+    <div class="rotating">Element 5</div>
+    <div class="rotating">Element 6</div>
+    <script src="auto-chaos-rotation.js"></script>
+</body>
+</html>

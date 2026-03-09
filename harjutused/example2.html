@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Simulator</title>
+    <style>
+        body {
+            margin:0;
+            font-family:system-ui, sans-serif;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-height:100vh;
+            background:#f5f5f5;
+            color:#333;
+        }
+        .container {
+            width:90vw;
+            max-width:600px;
+            background:#fff;
+            padding:2rem;
+            border-radius:12px;
+            box-shadow:0 4px 20px rgba(0,0,0,.1);
+        }
+        h1 {margin-top:0;text-align:center;}
+        label {display:block;margin:1rem 0 .25rem;}
+        input[type=number] {width:100%;padding:.5rem;border:1px solid #ccc;border-radius:6px;}
+        .expenses {margin-top:1rem;}
+        .expense-item {display:flex;gap:8px;margin-bottom:.5rem;}
+        .expense-item input {flex:1;}
+        .btn {cursor:pointer;padding:.5rem 1rem;border:none;border-radius:6px;background:#5b78d4;color:#fff;font-weight:600;}
+        .btn:hover {background:#005fa3;}
+        .totals {margin-top:1.5rem;font-weight:600;}
+        .warning {color:#b00;font-weight:700;}
+        canvas {width:100%;height:150px;margin-top:1.5rem;border:1px solid #ccc;border-radius:6px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Budget Simulator</h1>
+        <label for="income">Monthly Income</label>
+        <input type="number" id="income" min="0" step="0.01" placeholder="0.00">
+
+        <div class="expenses" id="expenses">
+            <h2>Expenses</h2>
+        </div>
+        <button id="addExpense" class="btn">Add expense</button>
+
+        <div class="totals">
+            <p>Total expenses: $<span id="totalExpenses">0.00</span></p>
+            <p>Remaining balance: $<span id="balance">0.00</span></p>
+            <p id="warning" class="warning" style="display:none;">Balance negative!</p>
+        </div>
+
+        <canvas id="chart"></canvas>
+    </div>
+
+    <script>
+        const incomeInput = document.getElementById('income');
+        const expensesDiv = document.getElementById('expenses');
+        const addBtn = document.getElementById('addExpense');
+        const totalExpEl = document.getElementById('totalExpenses');
+        const balanceEl = document.getElementById('balance');
+        const warningEl = document.getElementById('warning');
+        const canvas = document.getElementById('chart');
+        const ctx = canvas.getContext('2d');
+
+        let expenses = [];
+
+        function updateTotals() {
+            const income = parseFloat(incomeInput.value) || 0;
+            const totalExp = expenses.reduce((sum, e) => sum + (parseFloat(e.value) || 0), 0);
+            const balance = income - totalExp;
+            totalExpEl.textContent = totalExp.toFixed(2);
+            balanceEl.textContent = balance.toFixed(2);
+            warningEl.style.display = balance < 0 ? 'block' : 'none';
+            drawChart(income, totalExp);
+        }
+
+        function drawChart(income, expensesTotal) {
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = canvas.offsetHeight;
+            ctx.clearRect(0,0,width,height);
+            const barWidth = width * 0.6;
+            const margin = (width - barWidth) / 2;
+            // income bar
+            const maxVal = Math.max(income, expensesTotal, 1);
+            ctx.fillStyle = '#4caf50';
+            const incHeight = (income / maxVal) * height;
+            ctx.fillRect(margin, height - incHeight, barWidth, incHeight);
+            ctx.fillStyle = '#f44336';
+            const expHeight = (expensesTotal / maxVal) * height;
+            ctx.fillRect(margin, height - expHeight, barWidth, expHeight);
+            // labels
+            ctx.fillStyle = '#333';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Income', margin + barWidth/2, height - incHeight - 6);
+            ctx.fillText('Expenses', margin + barWidth/2, height - expHeight - 6);
+        }
+
+        function createExpenseRow() {
+            const div = document.createElement('div');
+            div.className = 'expense-item';
+            const name = document.createElement('input');
+            name.type = 'text';
+            name.placeholder = 'Description';
+            const amount = document.createElement('input');
+            amount.type = 'number';
+            amount.min = '0';
+            amount.step = '0.01';
+            amount.placeholder = '0.00';
+            amount.addEventListener('input', updateTotals);
+            const remove = document.createElement('button');
+            remove.textContent = '×';
+            remove.className = 'btn';
+            remove.style.background = '#b00';
+            remove.addEventListener('click', () => {
+                expenses = expenses.filter(e => e !== amount);
+                div.remove();
+                updateTotals();
+            });
+            div.append(name, amount, remove);
+            expensesDiv.appendChild(div);
+            expenses.push(amount);
+        }
+
+        addBtn.addEventListener('click', createExpenseRow);
+        incomeInput.addEventListener('input', updateTotals);
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover Filter Swap</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .filter-image {
+            width: 400px;
+            height: 300px;
+            margin: 20px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            filter: grayscale(100%) brightness(0.8);
+        }
+        .filter-image.filtered {
+            filter: hue-rotate(180deg) saturate(2) brightness(1.2);
+        }
+        h1 {
+            font-size: 48px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 18px;
+            text-align: center;
+            max-width: 600px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Hover Filter Swap</h1>
+    <p>Hover over the image to see its filter change from black and white to a vibrant neon effect!</p>
+    <img src="myimage.jpg" class="filter-image" alt="Filter Swap Image">
+    <script src="hover-filter-swap.js"></script>
+</body>
+</html>

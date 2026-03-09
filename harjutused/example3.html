@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Life Calculator</title>
+    <style>
+        body {
+            margin:0;
+            background: linear-gradient(135deg, #3b253b 20%, #ff97d5 100%);
+            color:#ffd4f1;
+            font-family:system-ui, sans-serif;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            height:100vh;
+            text-align:center;
+        }
+        .card {
+            background:#1a1a1a;
+            padding:2.5rem 3rem;
+            border-radius:12px;
+            box-shadow:0 0 30px rgba(48, 31, 45, 0.8);
+            max-width:400px;
+        }
+        h1 {margin:0 0 1rem; font-size:2rem; font-weight:900;}
+        label {display:block; margin-bottom:.5rem; font-size:1.1rem;}
+        input[type=number] {
+            width:100%; padding:.6rem; border:none; border-radius:6px;
+            font-size:1.1rem; text-align:center;
+            background:#222; color:#fff;
+        }
+        .results {margin-top:1.5rem;}
+        .result-item {margin:.8rem 0; font-size:1.3rem;}
+        .counter {font-weight:800; font-size:1.6rem; display:inline-block; min-width:4ch;}
+        .warning {color:#ff21aa; font-weight:700; margin-top:.5rem;}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Social Media Life</h1>
+        <label for="hours">Daily hours spent</label>
+        <input type="number" id="hours" min="0" step="0.1" placeholder="e.g. 2.5">
+
+        <label for="wage">Hourly wage (optional)</label>
+        <input type="number" id="wage" min="0" step="0.01" placeholder="e.g. 15.00">
+
+        <div class="results">
+            <div class="result-item">⏳ Hours per year: <span id="hoursYear" class="counter">0</span></div>
+            <div class="result-item">📅 Days per year: <span id="daysYear" class="counter">0</span></div>
+            <div class="result-item">🎬 Movies/TV (2h each): <span id="moviesYear" class="counter">0</span></div>
+            <div class="result-item">💰 Earnings if worked: $<span id="earnings" class="counter">0</span></div>
+            <div class="result-item">🔋 % of waking life: <span id="percent" class="counter">0</span>%</div>
+        </div>
+        <div id="warning" class="warning" style="display:none;">Please enter a positive number.</div>
+    </div>
+
+    <script>
+        const hoursInput = document.getElementById('hours');
+        const wageInput = document.getElementById('wage');
+        const hoursYearEl = document.getElementById('hoursYear');
+        const daysYearEl = document.getElementById('daysYear');
+        const moviesYearEl = document.getElementById('moviesYear');
+        const earningsEl = document.getElementById('earnings');
+        const percentEl = document.getElementById('percent');
+        const warningEl = document.getElementById('warning');
+
+        const WAKE_HOURS_PER_YEAR = 16 * 365;
+        const MOVIE_LENGTH_HOURS = 2; // assume 2h per movie/episode
+
+        function animateValue(el, start, end, duration = 800, decimals = 0) {
+            const range = end - start;
+            const startTime = performance.now();
+            function step(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const value = start + range * progress;
+                el.textContent = (decimals ? value.toFixed(decimals) : Math.round(value));
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        function update() {
+            const hours = parseFloat(hoursInput.value);
+            const wage = parseFloat(wageInput.value);
+            if (isNaN(hours) || hours < 0) {
+                warningEl.style.display = 'block';
+                return;
+            }
+            warningEl.style.display = 'none';
+            const yearly = hours * 365;
+            const days = yearly / 24;
+            const movies = yearly / MOVIE_LENGTH_HOURS;
+            let earnings = 0;
+            if (!isNaN(wage) && wage > 0) {
+                earnings = yearly * wage;
+            }
+            const pct = yearly / WAKE_HOURS_PER_YEAR * 100;
+
+            animateValue(hoursYearEl, parseFloat(hoursYearEl.textContent) || 0, yearly, 600, 1);
+            animateValue(daysYearEl, parseFloat(daysYearEl.textContent) || 0, days, 600, 1);
+            animateValue(moviesYearEl, parseFloat(moviesYearEl.textContent) || 0, movies, 600, 1);
+            animateValue(earningsEl, parseFloat(earningsEl.textContent) || 0, earnings, 600, 2);
+            animateValue(percentEl, parseFloat(percentEl.textContent) || 0, pct, 600, 1);
+        }
+
+        hoursInput.addEventListener('input', update);
+        wageInput.addEventListener('input', update);
+    </script>
+</body>
+</html>

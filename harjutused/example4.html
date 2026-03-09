@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Countdown</title>
+    <style>
+        body {
+            margin:0;
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#000;
+            color:#0ff;
+            font-family:'Courier New', monospace;
+            overflow:hidden;
+        }
+        .container {
+            text-align:center;
+        }
+        h1 {font-size:2.5rem; margin-bottom:1rem;}
+        input[type=datetime-local] {
+            font-size:1rem;
+            padding:.5rem;
+            border:none;
+            border-radius:8px;
+            background:#111;
+            color:#0ff;
+            margin-bottom:1rem;
+        }
+        .countdown {
+            display:flex;
+            gap:1.5rem;
+            justify-content:center;
+            font-size:2rem;
+        }
+        .segment {
+            text-align:center;
+        }
+        .number {
+            font-size:3rem;
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+            from {transform: scale(1);}
+            to {transform: scale(1.1);}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown to...</h1>
+        <input type="datetime-local" id="target">
+        <div class="countdown" id="display">
+            <div class="segment"><div class="number" id="days">0</div><div>Days</div></div>
+            <div class="segment"><div class="number" id="hours">0</div><div>Hours</div></div>
+            <div class="segment"><div class="number" id="minutes">0</div><div>Minutes</div></div>
+            <div class="segment"><div class="number" id="seconds">0</div><div>Seconds</div></div>
+        </div>
+    </div>
+
+    <script>
+        const targetInput = document.getElementById('target');
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        let targetTime = null;
+        function updateCountdown() {
+            if (!targetTime) return;
+            const now = new Date().getTime();
+            const diff = targetTime - now;
+            if (diff <= 0) {
+                daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '0';
+                return;
+            }
+            const s = Math.floor(diff/1000)%60;
+            const m = Math.floor(diff/1000/60)%60;
+            const h = Math.floor(diff/1000/60/60)%24;
+            const d = Math.floor(diff/1000/60/60/24);
+            daysEl.textContent = d;
+            hoursEl.textContent = h;
+            minutesEl.textContent = m;
+            secondsEl.textContent = s;
+        }
+
+        targetInput.addEventListener('change', () => {
+            const t = targetInput.value;
+            if (t) {
+                targetTime = new Date(t).getTime();
+            } else {
+                targetTime = null;
+            }
+            updateCountdown();
+        });
+
+        setInterval(updateCountdown, 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toggle Themes with Sound</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.5s, color 0.5s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        body.light {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: #2d3436;
+        }
+        body.dark {
+            background: linear-gradient(135deg, #2d3436 0%, #000000 100%);
+            color: #ffffff;
+        }
+        .toggle-button {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        .toggle-button:hover {
+            background: linear-gradient(45deg, #feca57, #ff6b6b);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+        body.dark .toggle-button {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+        }
+        body.dark .toggle-button:hover {
+            background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        p {
+            font-size: 20px;
+            max-width: 600px;
+            line-height: 1.6;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="light">
+    <h1>Toggle Themes</h1>
+    <p>Experience smooth theme transitions with sound! Click the button below to switch between light and dark modes.</p>
+    <button class="toggle-button" id="toggle">Toggle Theme</button>
+    <script src="toggle-themes.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Boss Phrase Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin:0;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background: linear-gradient(135deg, #fcbad9 0%, #f4f8ce 50%, #ffebf8 100%);
+            color:rgb(224, 243, 138);
+            font-family:'Poppins',sans-serif;
+        }
+        .app {
+            text-align:center;
+            padding:2rem 3rem;
+            background:#222;
+            border-radius:12px;
+            box-shadow:0 0 30px rgb(163, 255, 102);
+            max-width:600px;
+        }
+        h1 {margin-bottom:1rem; font-weight:800; color:rgb(163, 255, 102);
+            text-shadow:0 0 6px rgb(221, 255, 158);
+        }
+        #phrase {
+            min-height:4rem;
+            font-size:1.3rem;
+            line-height:1.4;
+            opacity:0;
+            transition:opacity .3s;
+        }
+        .btn {
+            margin:.6rem .3rem 0;
+            padding:.7rem 1.4rem;
+            border:none;
+            border-radius:8px;
+            background:rgb(194, 255, 154);
+            color:#181818;
+            font-weight:700;
+            cursor:pointer;
+            transition:transform .2s,filter .2s;
+        }
+        .btn:hover {transform:translateY(-2px);filter:brightness(1.1);}
+    </style>
+</head>
+<body>
+    <div class="app">
+        <h1>Úlemuse fraaside generaator</h1>
+        <div id="phrase"></div>
+        <button id="generate" class="btn">Genera uue</button>
+        <button id="copy" class="btn">Kopeeri</button>
+    </div>
+
+    <script>
+        const phrases = [
+            "Fantastic job, keep this momentum going!",
+            "You're ahead of schedule, I appreciate your initiative.",
+            "Your solution exceeded expectations, well done!",
+            "This is exactly the quality we strive for.",
+            "You've really thought outside the box, impressive.",
+            "Great communication—invaluable to the team.",
+            "You're hitting all the high-value targets, thank you.",
+            "You handled that perfectly, I'm proud of your leadership.",
+            "Your speed and accuracy are exceptional.",
+            "You're setting a great example, everyone notices."
+        ];
+
+        const phraseEl = document.getElementById('phrase');
+        const genBtn = document.getElementById('generate');
+        const copyBtn = document.getElementById('copy');
+
+        function pickRandom(arr) {
+            return arr[Math.floor(Math.random()*arr.length)];
+        }
+
+        function animateText(el, text) {
+            el.textContent = '';
+            el.style.opacity = 1;
+            let i = 0;
+            const interval = setInterval(()=>{
+                el.textContent += text.charAt(i);
+                i++;
+                if(i>=text.length) clearInterval(interval);
+            },30);
+        }
+
+        function generate() {
+            const text = pickRandom(phrases);
+            animateText(phraseEl, text);
+        }
+
+        genBtn.addEventListener('click', generate);
+        copyBtn.addEventListener('click', ()=>{
+            const text = phraseEl.textContent;
+            if(!text) return;
+            navigator.clipboard.writeText(text)
+                .then(()=>alert('Kopeeritud!'))
+                .catch(()=>alert('Kopeerimine ebaõnnestus.'));
+        });
+
+        generate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragging Physics</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .draggable {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            border-radius: 20px;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: grab;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease;
+            position: relative;
+        }
+        .draggable:hover {
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        p {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dragging Physics</h1>
+    <p>Grab and drag the objects below. They move with inertia, like they're heavy!</p>
+    <div class="draggable">Drag Me 1</div>
+    <div class="draggable">Drag Me 2</div>
+    <div class="draggable">Drag Me 3</div>
+    <div class="draggable">Drag Me 4</div>
+    <script src="dragging-physics.js"></script>
+</body>
+</html>

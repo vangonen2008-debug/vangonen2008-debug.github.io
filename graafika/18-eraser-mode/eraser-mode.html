@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eraser Mode</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('https://via.placeholder.com/800x600/667eea/FFFFFF?text=Background+Image') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+        .erasable {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.5s ease;
+            cursor: crosshair;
+        }
+        .erasable.erased {
+            opacity: 0;
+            pointer-events: none;
+        }
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+        p {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: white;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <h1>Eraser Mode</h1>
+    <p>Hover over the elements to 'erase' them and reveal the background!</p>
+    <div class="erasable">Erase Me 1</div>
+    <div class="erasable">Erase Me 2</div>
+    <div class="erasable">Erase Me 3</div>
+    <div class="erasable">Erase Me 4</div>
+    <div class="erasable">Erase Me 5</div>
+    <div class="erasable">Erase Me 6</div>
+    <script src="eraser-mode.js"></script>
+</body>
+</html>
